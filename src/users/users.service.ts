@@ -1,5 +1,5 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { User } from './interfaces/user.interface';
+import { User } from './user.interface';
 import { CreateUserDto, UpdatePasswordDto } from './dto';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -47,5 +47,14 @@ export class UsersService {
     user.updatedAt = Date.now();
 
     this.users[userIndex] = user;
+    return user;
+  }
+
+  delete(id: string): void {
+    const userIndex = this.users.findIndex((us) => us.id === id);
+    if (userIndex === -1) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    this.users.splice(userIndex, 1);
   }
 }
