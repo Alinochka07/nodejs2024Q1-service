@@ -1,9 +1,38 @@
 # Home Library Service
 
-## To run the POST method:
+### !Important note:
 
 - choose Authorization -> Bearer Token (e.g. on Postman)
 - Content-Type of Headers should be -> application/json format
+
+## To run the Get method:
+
+- Simply run this endpoint to get all users (initially, it has no users): http://localhost:4000/user
+
+## To run the POST method:
+
+example:
+{
+"login": "User1",
+"password": "123456"
+}
+
+## To get only one user by ID with GET:
+
+- Add uuid to this endpoint: http://localhost:4000/user/{uuid}
+
+## To update user with PUT method:
+
+- Add uuid to this endpoint: http://localhost:4000/user/{uuid}
+- Body should be:
+  {
+  "oldPassword": "OlPasswordValue",
+  "newPassword": "NewPasswordValue"
+  }
+
+## To delete user:
+
+- Simply use this endpoint: http://localhost:4000/user/{uuid}
 
 ## Prerequisites
 
