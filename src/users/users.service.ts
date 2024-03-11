@@ -11,7 +11,17 @@ export class UsersService {
     return this.users;
   }
 
+  notUuid(id: string) {
+    const uuidRegex =
+      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+
+    if (!uuidRegex.test(id)) {
+      throw new HttpException('Invalid user ID', HttpStatus.BAD_REQUEST);
+    }
+  }
+
   getById(id: string): User {
+    this.notUuid(id);
     const user = this.users.find((us) => us.id === id);
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
@@ -33,6 +43,7 @@ export class UsersService {
   }
 
   updatePassword(id: string, updatePasswordDto: UpdatePasswordDto): User {
+    this.notUuid(id);
     const userIndex = this.users.findIndex((us) => us.id === id);
     if (userIndex === -1) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
@@ -51,6 +62,7 @@ export class UsersService {
   }
 
   delete(id: string): void {
+    this.notUuid(id);
     const userIndex = this.users.findIndex((us) => us.id === id);
     if (userIndex === -1) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);

@@ -6,6 +6,10 @@ import {
   Param,
   Body,
   Controller,
+  HttpCode,
+  HttpStatus,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdatePasswordDto } from './dto';
@@ -25,6 +29,8 @@ export class UsersController {
   }
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
+  @UsePipes(new ValidationPipe({ transform: true }))
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
@@ -37,7 +43,7 @@ export class UsersController {
     return this.usersService.updatePassword(id, updatePasswordDto);
   }
 
-  @Delete('id')
+  @Delete(':id')
   deleteUser(@Param('id') id: string) {
     return this.usersService.delete(id);
   }
