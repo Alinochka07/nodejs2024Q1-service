@@ -10,6 +10,11 @@ import {
   HttpStatus,
   UsePipes,
   ValidationPipe,
+  Req,
+  UnauthorizedException,
+  ForbiddenException,
+  Res,
+  HttpException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, UpdatePasswordDto } from './dto';
@@ -24,15 +29,18 @@ export class UsersController {
   }
 
   @Get(':id')
-  getUserById(@Param('id') id: string) {
-    return this.usersService.getById(id);
+  getUserById(@Req() req: Request, @Param('id') id: string) {
+    return this.usersService.getById(req, id);
   }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @UsePipes(new ValidationPipe({ transform: true }))
-  createUser(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  createUser(
+    @Req() req: Request,
+    @Body(ValidationPipe) createUserDto: CreateUserDto,
+  ) {
+    console.log('Received request body:', createUserDto);
+    return this.usersService.create(req, createUserDto);
   }
 
   @Put(':id')
@@ -44,7 +52,23 @@ export class UsersController {
   }
 
   @Delete(':id')
-  deleteUser(@Param('id') id: string) {
-    return this.usersService.delete(id);
+  async deleteUser(@Req() req: Request, @Param('id') id: string) {
+    if (!this.isAuthenticated(req)) {
+      throw new UnauthorizedException('Unauthorized');
+    }
+    if (!this.isAuthorized(req)) {
+      throw new ForbiddenException('Forbidden');
+    }
+
+    await this.usersService.delete(id);
+    return HttpStatus.NO_CONTENT;
+  }
+
+  private isAuthenticated(req: Request): boolean {
+    return true;
+  }
+
+  private isAuthorized(req: Request): boolean {
+    return true;
   }
 }

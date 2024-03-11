@@ -1,5 +1,10 @@
 # Home Library Service
 
+## To run the POST method:
+
+- choose Authorization -> Bearer Token (e.g. on Postman)
+- Content-Type of Headers should be -> application/json format
+
 ## Prerequisites
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
