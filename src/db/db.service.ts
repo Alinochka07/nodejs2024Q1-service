@@ -3,6 +3,7 @@ import { randomUUID } from 'crypto';
 import { Album, Artist, Track, User } from './db.models';
 import { CreateUserDto, GetUserDto } from '../users/dto';
 import { CreateAlbumDto } from '../albums/dto';
+import { CreateArtistDto, GetArtistDto } from 'src/artists/dto';
 
 @Injectable()
 export class DatabaseService {
@@ -118,6 +119,70 @@ export class DatabaseService {
           const updatedTrack: Track = {
             ...track,
             albumId: null,
+          };
+
+          this.tracks.set(track.id, updatedTrack);
+        }
+      });
+    }
+
+    return res;
+  }
+
+  // artists
+  public async createArtist(dto: CreateArtistDto): Promise<Artist> {
+    const uuid = randomUUID();
+
+    const artist: Artist = {
+      ...dto,
+      id: uuid,
+    };
+
+    this.artists.set(uuid, artist);
+
+    return artist;
+  }
+
+  public async getArtist(id: string): Promise<Artist | undefined> {
+    return this.artists.get(id);
+  }
+
+  public async getAllArtists(): Promise<Artist[]> {
+    return [...this.artists.values()];
+  }
+
+  public async updateArtist(id: string, dto: GetArtistDto): Promise<Artist> {
+    const updatedArtist: Artist = {
+      ...dto,
+    };
+
+    this.artists.set(id, updatedArtist);
+
+    return updatedArtist;
+  }
+
+  public async removeArtist(id: string): Promise<boolean> {
+    const res = this.artists.delete(id);
+
+    if (res) {
+      this.favorites.artists.delete(id);
+
+      [...this.albums.values()].forEach((album) => {
+        if (album.artistId === id) {
+          const updatedAlbum: Album = {
+            ...album,
+            artistId: null,
+          };
+
+          this.albums.set(album.id, updatedAlbum);
+        }
+      });
+
+      [...this.tracks.values()].forEach((track) => {
+        if (track.artistId === id) {
+          const updatedTrack: Track = {
+            ...track,
+            artistId: null,
           };
 
           this.tracks.set(track.id, updatedTrack);
