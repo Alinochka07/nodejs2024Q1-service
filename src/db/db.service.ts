@@ -1,12 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-
-import { Album, Artist, Track, User } from '../models/db.models';
+import { Album, Artist, Track, User } from './db.models';
 import { CreateUserDto, GetUserDto } from '../users/dto';
-// import { ICreateTrackDto, IGetTrackDto } from '../models/track-dto.model';
-// import { ICreateArtistDto, IGetArtistDto } from '../models/artist-dto.model';
-// import { ICreateAlbumDto } from '../models/album-dto.model';
-// import { FavoriteEntityType } from '../models/favorites-entity,model';
+import { CreateAlbumDto } from '../albums/dto';
 
 @Injectable()
 export class DatabaseService {
@@ -69,170 +65,68 @@ export class DatabaseService {
     return this.users.delete(id);
   }
 
-  // tracks
-  //   public async createTrack(dto: ICreateTrackDto): Promise<Track> {
-  //     const uuid = randomUUID();
+  // albums
+  public async createAlbum(dto: CreateAlbumDto): Promise<Album> {
+    const uuid = randomUUID();
 
-  //     const track: Track = {
-  //       ...dto,
-  //       id: uuid,
-  //     };
+    const album: Album = {
+      ...dto,
+      id: uuid,
+    };
 
-  //     this.tracks.set(uuid, track);
+    this.albums.set(uuid, album);
 
-  //     return track;
-  //   }
+    return album;
+  }
 
-  //   public async getTrack(id: string): Promise<Track | undefined> {
-  //     return this.tracks.get(id);
-  //   }
+  public async getAlbum(id: string): Promise<Album | undefined> {
+    return this.albums.get(id);
+  }
 
-  //   public async getAllTracks(): Promise<Track[]> {
-  //     return [...this.tracks.values()];
-  //   }
+  public async getAllAlbums(): Promise<Album[]> {
+    return [...this.albums.values()];
+  }
 
-  //   public async updateTrack(id: string, dto: IGetTrackDto): Promise<Track> {
-  //     const updatedtrack: Track = {
-  //       ...dto,
-  //     };
+  public async updateAlbum(
+    id: string,
+    dto: CreateAlbumDto,
+  ): Promise<Album | null> {
+    const album = this.albums.get(id);
 
-  //     this.tracks.set(id, updatedtrack);
+    if (!album) {
+      return null;
+    }
 
-  //     return updatedtrack;
-  //   }
+    const updatedAlbum: Album = {
+      ...album,
+      ...dto,
+    };
 
-  //   public async removeTrack(id: string): Promise<boolean> {
-  //     this.favorites.tracks.delete(id);
+    this.albums.set(id, updatedAlbum);
 
-  //     return this.tracks.delete(id);
-  //   }
+    return updatedAlbum;
+  }
 
-  //   // artists
-  //   public async createArtist(dto: ICreateArtistDto): Promise<Artist> {
-  //     const uuid = randomUUID();
+  public async removeAlbum(id: string): Promise<boolean> {
+    const res = this.albums.delete(id);
 
-  //     const artist: Artist = {
-  //       ...dto,
-  //       id: uuid,
-  //     };
+    if (res) {
+      this.favorites.albums.delete(id);
 
-  //     this.artists.set(uuid, artist);
+      [...this.tracks.values()].forEach((track) => {
+        if (track.albumId === id) {
+          const updatedTrack: Track = {
+            ...track,
+            albumId: null,
+          };
 
-  //     return artist;
-  //   }
+          this.tracks.set(track.id, updatedTrack);
+        }
+      });
+    }
 
-  //   public async getArtist(id: string): Promise<Artist | undefined> {
-  //     return this.artists.get(id);
-  //   }
-
-  //   public async getAllArtists(): Promise<Artist[]> {
-  //     return [...this.artists.values()];
-  //   }
-
-  //   public async updateArtist(id: string, dto: IGetArtistDto): Promise<Artist> {
-  //     const updatedArtist: Artist = {
-  //       ...dto,
-  //     };
-
-  //     this.artists.set(id, updatedArtist);
-
-  //     return updatedArtist;
-  //   }
-
-  //   public async removeArtist(id: string): Promise<boolean> {
-  //     const res = this.artists.delete(id);
-
-  //     if (res) {
-  //       this.favorites.artists.delete(id);
-
-  //       [...this.albums.values()].forEach((album) => {
-  //         if (album.artistId === id) {
-  //           const updatedAlbum: Album = {
-  //             ...album,
-  //             artistId: null,
-  //           };
-
-  //           this.albums.set(album.id, updatedAlbum);
-  //         }
-  //       });
-
-  //       [...this.tracks.values()].forEach((track) => {
-  //         if (track.artistId === id) {
-  //           const updatedTrack: Track = {
-  //             ...track,
-  //             artistId: null,
-  //           };
-
-  //           this.tracks.set(track.id, updatedTrack);
-  //         }
-  //       });
-  //     }
-
-  //     return res;
-  //   }
-
-  //   // albums
-  //   public async createAlbum(dto: ICreateAlbumDto): Promise<Album> {
-  //     const uuid = randomUUID();
-
-  //     const album: Album = {
-  //       ...dto,
-  //       id: uuid,
-  //     };
-
-  //     this.albums.set(uuid, album);
-
-  //     return album;
-  //   }
-
-  //   public async getAlbum(id: string): Promise<Album | undefined> {
-  //     return this.albums.get(id);
-  //   }
-
-  //   public async getAllAlbums(): Promise<Album[]> {
-  //     return [...this.albums.values()];
-  //   }
-
-  //   public async updateAlbum(
-  //     id: string,
-  //     dto: ICreateAlbumDto,
-  //   ): Promise<Album | null> {
-  //     const album = this.albums.get(id);
-
-  //     if (!album) {
-  //       return null;
-  //     }
-
-  //     const updatedAlbum: Album = {
-  //       ...album,
-  //       ...dto,
-  //     };
-
-  //     this.albums.set(id, updatedAlbum);
-
-  //     return updatedAlbum;
-  //   }
-
-  //   public async removeAlbum(id: string): Promise<boolean> {
-  //     const res = this.albums.delete(id);
-
-  //     if (res) {
-  //       this.favorites.albums.delete(id);
-
-  //       [...this.tracks.values()].forEach((track) => {
-  //         if (track.albumId === id) {
-  //           const updatedTrack: Track = {
-  //             ...track,
-  //             albumId: null,
-  //           };
-
-  //           this.tracks.set(track.id, updatedTrack);
-  //         }
-  //       });
-  //     }
-
-  //     return res;
-  //   }
+    return res;
+  }
 
   //   // favorites
   //   public async getFavorites() {
