@@ -1,17 +1,37 @@
-import { IsString, IsNotEmpty, MinLength } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString, MinLength, IsNotEmpty } from 'class-validator';
 
 export class CreateUserDto {
-  @IsString({ message: 'Login must be a string' })
-  @IsNotEmpty({ message: 'Login should not be empty' })
-  readonly login: string;
+  @ApiProperty({ example: 'User1' })
+  @IsNotEmpty()
+  @IsString()
+  login: string;
 
-  @IsString({ message: 'Password must be a string' })
-  @IsNotEmpty({ message: 'Password should not be empty' })
-  @MinLength(5, { message: 'Password must be at least 5 characters long' })
-  readonly password: string;
+  @ApiProperty()
+  @IsNotEmpty()
+  @MinLength(3)
+  password: string;
 }
 
-export interface UpdatePasswordDto {
+export class UpdateUserDto {
+  @ApiProperty({ example: 'OldPassword' })
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(3)
   oldPassword: string;
+
+  @ApiProperty({ example: 'NewPassword' })
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(3)
   newPassword: string;
+}
+
+export interface GetUserDto {
+  id: string;
+  login: string;
+  password: string;
+  version: number;
+  createdAt: number;
+  updatedAt: number;
 }
