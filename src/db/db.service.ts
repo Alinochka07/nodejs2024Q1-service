@@ -4,6 +4,7 @@ import { Album, Artist, Track, User } from './db.models';
 import { CreateUserDto, GetUserDto } from '../users/dto';
 import { CreateAlbumDto } from '../albums/dto';
 import { CreateArtistDto, GetArtistDto } from 'src/artists/dto';
+import { CreateTrackDto, GetTrackDto } from 'src/tracks/dto';
 
 @Injectable()
 export class DatabaseService {
@@ -191,6 +192,44 @@ export class DatabaseService {
     }
 
     return res;
+  }
+
+  // tracks
+  public async createTrack(dto: CreateTrackDto): Promise<Track> {
+    const uuid = randomUUID();
+
+    const track: Track = {
+      ...dto,
+      id: uuid,
+    };
+
+    this.tracks.set(uuid, track);
+
+    return track;
+  }
+
+  public async getTrack(id: string): Promise<Track | undefined> {
+    return this.tracks.get(id);
+  }
+
+  public async getAllTracks(): Promise<Track[]> {
+    return [...this.tracks.values()];
+  }
+
+  public async updateTrack(id: string, dto: GetTrackDto): Promise<Track> {
+    const updatedtrack: Track = {
+      ...dto,
+    };
+
+    this.tracks.set(id, updatedtrack);
+
+    return updatedtrack;
+  }
+
+  public async removeTrack(id: string): Promise<boolean> {
+    this.favorites.tracks.delete(id);
+
+    return this.tracks.delete(id);
   }
 
   //   // favorites
