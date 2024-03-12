@@ -5,6 +5,7 @@ import { CreateUserDto, GetUserDto } from '../users/dto';
 import { CreateAlbumDto } from '../albums/dto';
 import { CreateArtistDto, GetArtistDto } from 'src/artists/dto';
 import { CreateTrackDto, GetTrackDto } from 'src/tracks/dto';
+import { FavoriteEntityType } from 'src/favorites/favorite.entity';
 
 @Injectable()
 export class DatabaseService {
@@ -232,68 +233,68 @@ export class DatabaseService {
     return this.tracks.delete(id);
   }
 
-  //   // favorites
-  //   public async getFavorites() {
-  //     return Object.keys(this.favorites).reduce((obj, key) => {
-  //       obj[key] = [...this.favorites?.[key]?.keys()]?.reduce((acc, id) => {
-  //         if (this?.[key]?.has(id)) {
-  //           acc.push(this[key].get(id));
-  //         }
+  // favorites
+  public async getFavorites() {
+    return Object.keys(this.favorites).reduce((obj, key) => {
+      obj[key] = [...this.favorites?.[key]?.keys()]?.reduce((acc, id) => {
+        if (this?.[key]?.has(id)) {
+          acc.push(this[key].get(id));
+        }
 
-  //         return acc;
-  //       }, []);
+        return acc;
+      }, []);
 
-  //       return obj;
-  //     }, {});
-  //   }
+      return obj;
+    }, {});
+  }
 
-  //   public async addFavorite(
-  //     type: FavoriteEntityType,
-  //     id: string,
-  //   ): Promise<string | null> {
-  //     switch (type) {
-  //       case 'album':
-  //         if (this.albums.has(id)) {
-  //           this.favorites.albums.set(id, type);
+  public async addFavorite(
+    type: FavoriteEntityType,
+    id: string,
+  ): Promise<string | null> {
+    switch (type) {
+      case 'album':
+        if (this.albums.has(id)) {
+          this.favorites.albums.set(id, type);
 
-  //           return id;
-  //         }
+          return id;
+        }
 
-  //         return null;
-  //       case 'artist':
-  //         if (this.artists.has(id)) {
-  //           this.favorites.artists.set(id, type);
+        return null;
+      case 'artist':
+        if (this.artists.has(id)) {
+          this.favorites.artists.set(id, type);
 
-  //           return id;
-  //         }
+          return id;
+        }
 
-  //         return null;
-  //       case 'track':
-  //         if (this.tracks.has(id)) {
-  //           this.favorites.tracks.set(id, type);
+        return null;
+      case 'track':
+        if (this.tracks.has(id)) {
+          this.favorites.tracks.set(id, type);
 
-  //           return id;
-  //         }
+          return id;
+        }
 
-  //         return null;
-  //       default:
-  //         return null;
-  //     }
-  //   }
+        return null;
+      default:
+        return null;
+    }
+  }
 
-  //   public async removeFavorite(
-  //     type: FavoriteEntityType,
-  //     id: string,
-  //   ): Promise<boolean> {
-  //     switch (type) {
-  //       case 'album':
-  //         return this.favorites.albums.delete(id);
-  //       case 'artist':
-  //         return this.favorites.artists.delete(id);
-  //       case 'track':
-  //         return this.favorites.tracks.delete(id);
-  //       default:
-  //         return false;
-  //     }
-  //}
+  public async removeFavorite(
+    type: FavoriteEntityType,
+    id: string,
+  ): Promise<boolean> {
+    switch (type) {
+      case 'album':
+        return this.favorites.albums.delete(id);
+      case 'artist':
+        return this.favorites.artists.delete(id);
+      case 'track':
+        return this.favorites.tracks.delete(id);
+      default:
+        return false;
+    }
+  }
 }
