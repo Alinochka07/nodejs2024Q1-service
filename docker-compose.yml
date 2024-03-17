@@ -23,8 +23,10 @@ services:
       - postgres
 
   postgres:
-    build: ./postgres
-    image: postgres:10.4
+    build: 
+      context: .
+      dockerfile: Dockerfile.postgres
+    image: postgres:latest
     restart: always
     container_name: postgres
     environment:
