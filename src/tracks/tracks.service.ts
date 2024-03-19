@@ -3,6 +3,7 @@ import { plainToClass } from 'class-transformer';
 import { DatabaseService } from '../db/db.service';
 import { Track } from './track.entity';
 import { CreateTrackDto, UpdateTrackDto } from './dto';
+import { User } from 'src/users/users.entity';
 
 @Injectable()
 export class TracksService {
@@ -40,6 +41,7 @@ export class TracksService {
     const updatedTrack: Track = {
       ...track,
       ...updateTrackDto,
+      user: new User(),
     };
 
     const res = await this.db.updateTrack(id, updatedTrack);

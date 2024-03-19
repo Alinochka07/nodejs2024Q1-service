@@ -3,6 +3,7 @@ import { plainToClass } from 'class-transformer';
 import { DatabaseService } from '../db/db.service';
 import { Artist } from './artist.entity';
 import { CreateArtistDto, UpdateArtistDto } from './dto';
+import { User } from 'src/users/users.entity';
 
 @Injectable()
 export class ArtistsService {
@@ -40,6 +41,7 @@ export class ArtistsService {
     const updatedArtist: Artist = {
       ...artist,
       ...updateArtistDto,
+      user: new User(),
     };
 
     const res = await this.db.updateArtist(id, updatedArtist);

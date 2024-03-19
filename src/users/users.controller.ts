@@ -10,7 +10,6 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto';
 import { UpdateUserDto } from './dto';
@@ -25,7 +24,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Create user', description: 'Create  new user.' })
   @ApiResponse({ status: 201, description: 'Create user', type: User })
   @ApiResponse({ status: 400, description: 'Body not contain required fields' })
-  create(@Body() createUserDto: CreateUserDto) {
+  create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.usersService.create(createUserDto);
   }
 
@@ -35,7 +34,7 @@ export class UsersController {
     description: 'Retrieve a list of all users.',
   })
   @ApiResponse({ status: 200, description: 'Get all users', type: [User] })
-  getAll() {
+  getAll(): Promise<User[]> {
     return this.usersService.getAll();
   }
 
@@ -47,7 +46,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Get user by id', type: User })
   @ApiResponse({ status: 400, description: 'Invalid userId (not uuid)' })
   @ApiResponse({ status: 404, description: 'User not found' })
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<User> {
     return this.usersService.getById(id);
   }
 
@@ -63,7 +62,7 @@ export class UsersController {
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ) {
+  ): Promise<User> {
     return this.usersService.update(id, updateUserDto);
   }
 
@@ -76,7 +75,7 @@ export class UsersController {
   @ApiResponse({ status: 400, description: 'Invalid userId (not uuid)' })
   @ApiResponse({ status: 404, description: 'User not found' })
   @HttpCode(204)
-  remove(@Param('id', ParseUUIDPipe) id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.usersService.remove(id);
   }
 }

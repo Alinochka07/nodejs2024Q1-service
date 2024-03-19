@@ -1,4 +1,4 @@
-FROM node:20-lts
+FROM node:20.11-alpine
 
 WORKDIR /app
 
@@ -8,6 +8,9 @@ RUN npm install
 
 COPY . .
 
+RUN npm run build
+
 EXPOSE 4000
 
-CMD [ "npm", "start" ]
+CMD [ "node", "dist/main" ]
+# CMD [ "npm", "start" ]

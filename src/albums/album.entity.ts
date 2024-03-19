@@ -1,4 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { User } from 'src/users/users.entity';
+import { ManyToOne } from 'typeorm';
 
 export class Album {
   @ApiProperty({
@@ -19,4 +21,7 @@ export class Album {
     nullable: true,
   })
   artistId: string | null;
+
+  @ManyToOne(() => User, { lazy: true })
+  user: User;
 }

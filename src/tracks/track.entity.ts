@@ -1,4 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { User } from 'src/users/users.entity';
+import { ManyToOne } from 'typeorm';
 
 export class Track {
   @ApiProperty({
@@ -30,4 +32,7 @@ export class Track {
     type: 'integer',
   })
   duration: number;
+
+  @ManyToOne(() => User, { lazy: true })
+  user: User;
 }

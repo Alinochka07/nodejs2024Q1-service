@@ -2,7 +2,11 @@
 FROM postgres:latest
 
 ENV POSTGRES_DB=db
-ENV POSTGRES_USER=user
-ENV POSTGRES_PASSWORD=password
+ENV POSTGRES_USER=${POSTGRES_USER}
+ENV POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+
+VOLUME /var/lib/postgresql/data
 
 EXPOSE 5432
+
+CMD ["postgres", "-f", "-D", "/var/lib/postgresql/data"]

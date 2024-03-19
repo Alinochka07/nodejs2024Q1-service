@@ -6,10 +6,10 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: nest-docker
-    restart: always
+    restart: unless-stopped
     environment:
-      - PORT=${PORT}
-      # - DATABASE_URL=postgres://user:password@postgress:5432/db
+      - PORT=4000
+      - DATABASE_URL=${DATABASE_URL}
       - NODE_ENV=development
       - CRYPT_SALT=10
       - JWT_SECRET_KEY=secret123123
@@ -22,16 +22,17 @@ services:
     depends_on:
       - postgres
 
+
   postgres:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile.postgres
     image: postgres:latest
-    restart: always
     container_name: postgres
+    restart: always
     environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=db
     ports:
       - '5432:5432'
@@ -41,5 +42,9 @@ services:
 networks:
   default:
     driver: bridge
+    external: true
+
+volumes:
+  pgdata: {}
 
 

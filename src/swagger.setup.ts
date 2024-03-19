@@ -5,8 +5,9 @@ export const setupSwagger = (app: INestApplication, port) => {
   const config = new DocumentBuilder()
     .setTitle('Home Service Library')
     .setDescription('The REST API description')
-    .setVersion('0.0.1')
+    .setVersion('0.0.2')
     .addServer(`http://localhost:${port}`)
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
