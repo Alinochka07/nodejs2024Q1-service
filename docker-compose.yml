@@ -1,50 +1,83 @@
-version: '3.8'
-
+version: "3.8"
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: nest-docker
-    restart: unless-stopped
-    environment:
-      - PORT=4000
-      - DATABASE_URL=${DATABASE_URL}
-      - NODE_ENV=development
-      - CRYPT_SALT=10
-      - JWT_SECRET_KEY=secret123123
-      - JWT_SECRET_REFRESH_KEY=secret123123
-      - TOKEN_EXPIRE_TIME=1h
-      - TOKEN_REFRESH_EXPIRE_TIME=24h
+    app:
+        build:
+            dockerfile: Dockerfile
+            context: .
+        container_name: nest-docker
+        depends_on: 
+            - postgres
+        environment: 
+            DATABASE_URL: ${DATABASE_URL}
+            NODE_ENV: development
+            PORT: ${PORT}
+        ports:
+            - "4000:4000"
+        networks:
+            - my_network
 
-    ports:
-      - '4000:4000'
-    depends_on:
-      - postgres
-
-
-  postgres:
-    build:
-      context: .
-      dockerfile: Dockerfile.postgres
-    image: postgres:latest
-    container_name: postgres
-    restart: always
-    environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=db
-    ports:
-      - '5432:5432'
-    volumes:
-      - ./pgdata:/var/lib/postgresql/data
+    postgres:
+        image: postgres:latest
+        container_name: postgres
+        build:
+            dockerfile: Dockerfile.postgres
+        ports:
+            - "35000:5432"
+        environment: 
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: ${POSTGRES_DB}
+        networks:
+            - my_network
 
 networks:
-  default:
+  my_network:
     driver: bridge
-    external: true
 
-volumes:
-  pgdata: {}
+# volumes:
+#   pgdata: {}
 
+# services:
+#   postgres:
+#     build:
+#       dockerfile: Dockerfile.postgres
+#     image: postgres:16
+#     container_name: postgres
+#     ports:
+#       - 5432:5432
+#     networks: 
+#       - my_network
+    
+#     restart: on-failure
+#     environment:
+#       - POSTGRES_USER=${POSTGRES_USER}
+#       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+#       - POSTGRES_DB=${POSTGRES_DB}
+#     volumes:
+#       - pgdata:/var/lib/postgresql@16/data
+
+#   app:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     container_name: nest-docker
+#     ports:
+#       - '4000:4000'
+#     depends_on:
+#       - postgres
+
+#     restart: unless-stopped
+#     environment:
+#       - DATABASE_URL=${DATABASE_URL}
+#       - DB_HOST=${DB_HOST}
+#       - NODE_ENV=development
+#       - CRYPT_SALT=10
+#       - JWT_SECRET_KEY=secret123123
+#       - JWT_SECRET_REFRESH_KEY=secret123123
+#       - TOKEN_EXPIRE_TIME=1h
+#       - TOKEN_REFRESH_EXPIRE_TIME=24h
+#     networks:
+#       - my_network
+#     expose:
+#       - 4000
 

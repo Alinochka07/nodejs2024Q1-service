@@ -1,14 +1,14 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { FavoriteEntityType } from './favorite.entity';
+import { FavoriteEntityType, FavoriteEntity } from './favorite.entity';
 
 export class FavoriteNotFoundException extends HttpException {
-  constructor(entityType: FavoriteEntityType) {
-    super(`Favorite ${entityType} not found`, HttpStatus.NOT_FOUND);
+  constructor(private readonly favoriteType: FavoriteEntityType) {
+    super(`Favorite not found: ${favoriteType}`, HttpStatus.NOT_FOUND);
   }
 }
 
 export class EntityNotFoundException extends HttpException {
-  constructor(entityType: FavoriteEntityType) {
+  constructor(entityType: FavoriteEntity) {
     super(`${entityType} not found`, HttpStatus.UNPROCESSABLE_ENTITY);
   }
 }

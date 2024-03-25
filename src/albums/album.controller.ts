@@ -10,10 +10,10 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { AlbumsService } from './albums.service';
+import { AlbumsService } from './album.service';
 import { CreateAlbumDto, UpdateAlbumDto } from './dto';
 
-import { Album } from './album.entity';
+import { AlbumEntity } from './album.entity';
 
 @ApiTags('Album')
 @Controller('album')
@@ -25,7 +25,11 @@ export class AlbumsController {
     summary: 'Create new album',
     description: 'Create a new album.',
   })
-  @ApiResponse({ status: 201, description: 'Create new album', type: Album })
+  @ApiResponse({
+    status: 201,
+    description: 'Create new album',
+    type: AlbumEntity,
+  })
   @ApiResponse({ status: 400, description: 'Body not contain required fields' })
   @ApiResponse({ status: 400, description: 'Bad request' })
   create(@Body() createAlbumDto: CreateAlbumDto) {
@@ -37,7 +41,11 @@ export class AlbumsController {
     summary: 'Get all albums',
     description: 'Retrieve a list of all albums.',
   })
-  @ApiResponse({ status: 200, description: 'Get all albums', type: [Album] })
+  @ApiResponse({
+    status: 200,
+    description: 'Get all albums',
+    type: [AlbumEntity],
+  })
   findAll() {
     return this.albumsService.findAll();
   }
@@ -47,7 +55,11 @@ export class AlbumsController {
     summary: 'Get album by id',
     description: 'Retrieve a single album by id.',
   })
-  @ApiResponse({ status: 200, description: 'Get album by id', type: Album })
+  @ApiResponse({
+    status: 200,
+    description: 'Get album by id',
+    type: AlbumEntity,
+  })
   @ApiResponse({ status: 400, description: 'Invalid albumId (not uuid)' })
   @ApiResponse({ status: 404, description: 'Album not found' })
   findOne(@Param('id', ParseUUIDPipe) id: string) {
@@ -59,7 +71,7 @@ export class AlbumsController {
     summary: 'Update album info',
     description: 'Update information for a specific album.',
   })
-  @ApiResponse({ status: 200, description: 'Update album', type: Album })
+  @ApiResponse({ status: 200, description: 'Update album', type: AlbumEntity })
   @ApiResponse({ status: 400, description: 'Invalid albumId (not uuid)' })
   @ApiResponse({ status: 404, description: 'Album not found' })
   update(

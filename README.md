@@ -1,7 +1,8 @@
-# Home Library Service
+# Home Library Service 2
 
 ### !Important note:
 
+- create .env from .env.example file
 - choose Authorization -> Bearer Token (e.g. on Postman)
 - Content-Type of Headers should be -> application/json format
 

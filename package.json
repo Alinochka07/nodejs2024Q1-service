@@ -1,6 +1,6 @@
 {
   "name": "home-library",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "author": "",
   "private": true,
@@ -36,6 +36,7 @@
     "dotenv": "^16.0.1",
     "http-status-codes": "^2.2.0",
     "pg": "^8.11.3",
+    "postgresql": "^0.0.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",

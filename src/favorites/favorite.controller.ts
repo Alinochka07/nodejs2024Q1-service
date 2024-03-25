@@ -8,11 +8,11 @@ import {
   HttpCode,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { FavoritesService } from './favorites.service';
-import { Favorites } from './favorite.entity';
-import { Track } from '../tracks/track.entity';
-import { Album } from '../albums/album.entity';
-import { Artist } from '../artists/artist.entity';
+import { FavoritesService } from './favorite.service';
+import { FavoriteEntity } from './favorite.entity';
+import { TrackEntity } from '../tracks/track.entity';
+import { AlbumEntity } from '../albums/album.entity';
+import { ArtistEntity } from '../artists/artist.entity';
 
 @ApiTags('Favorites')
 @Controller('favs')
@@ -24,7 +24,11 @@ export class FavoritesController {
     summary: 'Get all favorites',
     description: 'Retrieve a list of all favorites.',
   })
-  @ApiResponse({ status: 200, description: 'Get favorites', type: Favorites })
+  @ApiResponse({
+    status: 200,
+    description: 'Get favorites',
+    type: FavoriteEntity,
+  })
   findAll() {
     return this.favoritesService.findAll();
   }
@@ -34,7 +38,7 @@ export class FavoritesController {
     summary: 'Add album to favorites',
     description: 'Add album to favorites.',
   })
-  @ApiResponse({ status: 201, description: 'Add album', type: Album })
+  @ApiResponse({ status: 201, description: 'Add album', type: AlbumEntity })
   @ApiResponse({ status: 400, description: 'Invalid albumId (not uuid)' })
   @ApiResponse({ status: 422, description: 'Album does not exists' })
   addAlbum(@Param('id', ParseUUIDPipe) id: string) {
@@ -59,7 +63,7 @@ export class FavoritesController {
     summary: 'Add track to favorites',
     description: 'Add a track to favorites.',
   })
-  @ApiResponse({ status: 201, description: 'Add track ', type: Track })
+  @ApiResponse({ status: 201, description: 'Add track ', type: TrackEntity })
   @ApiResponse({ status: 400, description: 'Invalid trackId (not uuid)' })
   @ApiResponse({ status: 422, description: 'Track does not exists' })
   addTrack(@Param('id', ParseUUIDPipe) id: string) {
@@ -84,7 +88,7 @@ export class FavoritesController {
     summary: 'Add artist to favorites',
     description: 'Add  artist to favorites.',
   })
-  @ApiResponse({ status: 201, description: 'Add artist', type: Artist })
+  @ApiResponse({ status: 201, description: 'Add artist', type: ArtistEntity })
   @ApiResponse({ status: 400, description: 'Invalid artistId (not uuid)' })
   @ApiResponse({ status: 422, description: 'Artist does not exist' })
   addArtist(@Param('id', ParseUUIDPipe) id: string) {

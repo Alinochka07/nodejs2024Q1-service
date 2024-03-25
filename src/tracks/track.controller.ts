@@ -10,10 +10,10 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { TracksService } from './tracks.service';
+import { TracksService } from './track.service';
 import { CreateTrackDto, UpdateTrackDto } from './dto';
 
-import { Track } from './track.entity';
+import { TrackEntity } from './track.entity';
 
 @ApiTags('Track')
 @Controller('track')
@@ -25,7 +25,11 @@ export class TracksController {
     summary: 'Create new track',
     description: 'Create new track.',
   })
-  @ApiResponse({ status: 201, description: 'Create new track', type: Track })
+  @ApiResponse({
+    status: 201,
+    description: 'Create new track',
+    type: TrackEntity,
+  })
   @ApiResponse({
     status: 400,
     description: 'Body does not contain required fields',
@@ -39,7 +43,11 @@ export class TracksController {
     summary: 'Get all tracks',
     description: 'Retrieve a list of all tracks.',
   })
-  @ApiResponse({ status: 200, description: 'Get all tracks', type: [Track] })
+  @ApiResponse({
+    status: 200,
+    description: 'Get all tracks',
+    type: [TrackEntity],
+  })
   findAll() {
     return this.tracksService.findAll();
   }
@@ -49,7 +57,11 @@ export class TracksController {
     summary: 'Get track by id',
     description: 'Retrieve a single track by id.',
   })
-  @ApiResponse({ status: 200, description: 'Get track by id', type: Track })
+  @ApiResponse({
+    status: 200,
+    description: 'Get track by id',
+    type: TrackEntity,
+  })
   @ApiResponse({ status: 400, description: 'Invalid trackId (not uuid)' })
   @ApiResponse({ status: 404, description: 'Track not found' })
   findOne(@Param('id', ParseUUIDPipe) id: string) {
@@ -61,7 +73,11 @@ export class TracksController {
     summary: 'Update track info',
     description: 'Update information for a specific track.',
   })
-  @ApiResponse({ status: 200, description: 'Update track info', type: Track })
+  @ApiResponse({
+    status: 200,
+    description: 'Update track info',
+    type: TrackEntity,
+  })
   @ApiResponse({ status: 400, description: 'Invalid trackId (not uuid)' })
   @ApiResponse({ status: 404, description: 'Track not found' })
   update(

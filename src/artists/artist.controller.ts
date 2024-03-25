@@ -10,9 +10,9 @@ import {
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ArtistsService } from './artists.service';
+import { ArtistsService } from './artist.service';
 import { CreateArtistDto, UpdateArtistDto } from './dto';
-import { Artist } from './artist.entity';
+import { ArtistEntity } from './artist.entity';
 
 @ApiTags('Artist')
 @Controller('artist')
@@ -24,7 +24,11 @@ export class ArtistsController {
     summary: 'Create new artist',
     description: 'Create new artist.',
   })
-  @ApiResponse({ status: 201, description: 'Create new artist', type: Artist })
+  @ApiResponse({
+    status: 201,
+    description: 'Create new artist',
+    type: ArtistEntity,
+  })
   @ApiResponse({ status: 400, description: 'Body not contain required fields' })
   create(@Body() createArtistDto: CreateArtistDto) {
     return this.artistsService.create(createArtistDto);
@@ -35,7 +39,11 @@ export class ArtistsController {
     summary: 'Get all artists',
     description: 'Retrieve a list of all artists.',
   })
-  @ApiResponse({ status: 200, description: 'Get all artists', type: [Artist] })
+  @ApiResponse({
+    status: 200,
+    description: 'Get all artists',
+    type: [ArtistEntity],
+  })
   findAll() {
     return this.artistsService.findAll();
   }
@@ -45,7 +53,11 @@ export class ArtistsController {
     summary: 'Get artist by id',
     description: 'Retrieve a single artist by id.',
   })
-  @ApiResponse({ status: 200, description: 'Get artist by id', type: Artist })
+  @ApiResponse({
+    status: 200,
+    description: 'Get artist by id',
+    type: ArtistEntity,
+  })
   @ApiResponse({ status: 400, description: 'Invalid artistId (not uuid)' })
   @ApiResponse({ status: 404, description: 'Artist not found' })
   findOne(@Param('id', ParseUUIDPipe) id: string) {
@@ -57,7 +69,11 @@ export class ArtistsController {
     summary: 'Update artist info',
     description: 'Update information for a specific artist.',
   })
-  @ApiResponse({ status: 200, description: 'Update artist info', type: Artist })
+  @ApiResponse({
+    status: 200,
+    description: 'Update artist info',
+    type: ArtistEntity,
+  })
   @ApiResponse({ status: 400, description: 'Invalid artistId (not uuid)' })
   @ApiResponse({ status: 404, description: 'Artist not found' })
   update(
