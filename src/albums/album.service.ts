@@ -19,17 +19,16 @@ export class AlbumsService {
 
   async findAll(): Promise<AlbumEntity[]> {
     const albums = await this.albumRepository.find();
-    return albums.map((album) => plainToClass(AlbumEntity, album));
+    return plainToClass(AlbumEntity, albums);
   }
 
-  async findOne(id: string): Promise<AlbumEntity | null> {
-    const album = await this.albumRepository.findOne({
-      where: { id },
-    });
+  async findOne(id: string): Promise<AlbumEntity> {
+    const album = await this.albumRepository.findOne({ where: { id } });
 
     if (!album) {
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }
+
     return plainToClass(AlbumEntity, album);
   }
 
@@ -37,25 +36,26 @@ export class AlbumsService {
     id: string,
     updateAlbumDto: UpdateAlbumDto,
   ): Promise<AlbumEntity> {
-    const album = await this.albumRepository.findOne({
-      where: { id },
-    });
+    const album = await this.albumRepository.findOne({ where: { id } });
 
     if (!album) {
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }
-    Object.assign(album, updateAlbumDto);
-    await this.albumRepository.save(album);
-    return plainToClass(AlbumEntity, album);
+
+    const updatedAlbum = await this.albumRepository.save({
+      ...album,
+      ...updateAlbumDto,
+    });
+
+    return plainToClass(AlbumEntity, updatedAlbum);
   }
 
   async remove(id: string): Promise<void> {
-    const album = await this.albumRepository.findOne({
-      where: { id },
-    });
+    const album = await this.albumRepository.findOne({ where: { id } });
     if (!album) {
       throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
     }
-    await this.albumRepository.remove(album);
+
+    await this.albumRepository.delete(id);
   }
 }

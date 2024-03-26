@@ -9,10 +9,12 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FavoritesService } from './favorite.service';
-import { FavoriteEntity } from './favorite.entity';
+import { FavoriteEntity, FavoriteEntityType } from './favorite.entity';
 import { TrackEntity } from '../tracks/track.entity';
 import { AlbumEntity } from '../albums/album.entity';
 import { ArtistEntity } from '../artists/artist.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @ApiTags('Favorites')
 @Controller('favs')
@@ -33,78 +35,34 @@ export class FavoritesController {
     return this.favoritesService.findAll();
   }
 
-  @Post('/album/:id')
+  @Post('/:type/:id')
   @ApiOperation({
-    summary: 'Add album to favorites',
-    description: 'Add album to favorites.',
+    summary: 'Add item to favorites',
+    description: 'Add an item to favorites.',
   })
-  @ApiResponse({ status: 201, description: 'Add album', type: AlbumEntity })
-  @ApiResponse({ status: 400, description: 'Invalid albumId (not uuid)' })
-  @ApiResponse({ status: 422, description: 'Album does not exists' })
-  addAlbum(@Param('id', ParseUUIDPipe) id: string) {
-    return this.favoritesService.addFavorite('album', id);
+  @ApiResponse({ status: 201, description: 'Add item to favorites' })
+  @ApiResponse({ status: 400, description: 'Invalid id' })
+  @ApiResponse({ status: 422, description: 'Item does not exist' })
+  addItemToFavorites(
+    @Param('type') type: FavoriteEntityType,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    return this.favoritesService.addFavorite(type, id);
   }
 
-  @Delete('/album/:id')
+  @Delete('/:type/:id')
   @ApiOperation({
-    summary: 'Delete album from favorites',
-    description: 'Delete  album from favorites.',
+    summary: 'Remove item from favorites',
+    description: 'Remove an item from favorites.',
   })
-  @ApiResponse({ status: 204, description: 'Delete album from favorites' })
-  @ApiResponse({ status: 400, description: 'Invalid albumId (not uuid)' })
-  @ApiResponse({ status: 404, description: 'Album not found in favorites' })
+  @ApiResponse({ status: 204, description: 'Remove item from favorites' })
+  @ApiResponse({ status: 400, description: 'Invalid id' })
+  @ApiResponse({ status: 404, description: 'Item not found in favorites' })
   @HttpCode(204)
-  removeAlbum(@Param('id', ParseUUIDPipe) id: string) {
-    return this.favoritesService.removeFavorite('album', id);
-  }
-
-  @Post('/track/:id')
-  @ApiOperation({
-    summary: 'Add track to favorites',
-    description: 'Add a track to favorites.',
-  })
-  @ApiResponse({ status: 201, description: 'Add track ', type: TrackEntity })
-  @ApiResponse({ status: 400, description: 'Invalid trackId (not uuid)' })
-  @ApiResponse({ status: 422, description: 'Track does not exists' })
-  addTrack(@Param('id', ParseUUIDPipe) id: string) {
-    return this.favoritesService.addFavorite('track', id);
-  }
-
-  @Delete('/track/:id')
-  @ApiOperation({
-    summary: 'Delete track from favorites',
-    description: 'Delete track from favorites.',
-  })
-  @ApiResponse({ status: 204, description: 'Delete track from favorites' })
-  @ApiResponse({ status: 400, description: 'Invalid trackId (not uuid)' })
-  @ApiResponse({ status: 404, description: 'Track not found in favorites' })
-  @HttpCode(204)
-  removeTrack(@Param('id', ParseUUIDPipe) id: string) {
-    return this.favoritesService.removeFavorite('track', id);
-  }
-
-  @Post('/artist/:id')
-  @ApiOperation({
-    summary: 'Add artist to favorites',
-    description: 'Add  artist to favorites.',
-  })
-  @ApiResponse({ status: 201, description: 'Add artist', type: ArtistEntity })
-  @ApiResponse({ status: 400, description: 'Invalid artistId (not uuid)' })
-  @ApiResponse({ status: 422, description: 'Artist does not exist' })
-  addArtist(@Param('id', ParseUUIDPipe) id: string) {
-    return this.favoritesService.addFavorite('artist', id);
-  }
-
-  @Delete('/artist/:id')
-  @ApiOperation({
-    summary: 'Delete artist from favorites',
-    description: 'Delete  artist from favorites.',
-  })
-  @ApiResponse({ status: 204, description: 'Delete artist from favorites' })
-  @ApiResponse({ status: 400, description: 'Invalid artistId (not uuid)' })
-  @ApiResponse({ status: 404, description: 'Artist not found in favorites' })
-  @HttpCode(204)
-  removeArtist(@Param('id', ParseUUIDPipe) id: string) {
-    return this.favoritesService.removeFavorite('artist', id);
+  removeItemFromFavorites(
+    @Param('type') type: FavoriteEntityType,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    return this.favoritesService.removeFavorite(type, id);
   }
 }

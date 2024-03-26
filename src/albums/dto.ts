@@ -36,3 +36,10 @@ export class UpdateAlbumDto {
   })
   artistId: string | null;
 }
+
+export interface GetAlbumDto {
+  id: string; // uuid v4
+  name: string;
+  year: number;
+  artistId: string | null;
+}

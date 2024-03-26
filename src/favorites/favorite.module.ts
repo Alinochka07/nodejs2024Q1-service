@@ -6,7 +6,6 @@ import { FavoriteEntity } from './favorite.entity';
 import { ArtistsModule } from '../artists/artist.module';
 import { AlbumsModule } from '../albums/album.module';
 import { TracksModule } from '../tracks/track.module';
-import { UsersModule } from '../users/user.module';
 
 @Module({
   imports: [
@@ -14,7 +13,6 @@ import { UsersModule } from '../users/user.module';
     ArtistsModule,
     AlbumsModule,
     TracksModule,
-    UsersModule,
   ],
   controllers: [FavoritesController],
   providers: [FavoritesService],

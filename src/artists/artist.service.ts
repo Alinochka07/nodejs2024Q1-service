@@ -13,7 +13,8 @@ export class ArtistsService {
   ) {}
 
   async create(createArtistDto: CreateArtistDto): Promise<ArtistEntity> {
-    const artist = await this.artistRepository.create(createArtistDto);
+    const artist = this.artistRepository.create(createArtistDto);
+    await this.artistRepository.save(artist);
     return plainToClass(ArtistEntity, artist);
   }
 
@@ -22,7 +23,7 @@ export class ArtistsService {
     return artists.map((artist) => plainToClass(ArtistEntity, artist));
   }
 
-  async findOne(id: string): Promise<ArtistEntity> {
+  async findOne(id: string): Promise<ArtistEntity | undefined> {
     const artist = await this.artistRepository.findOne({ where: { id } });
 
     if (!artist) {
@@ -36,23 +37,22 @@ export class ArtistsService {
     id: string,
     updateArtistDto: UpdateArtistDto,
   ): Promise<ArtistEntity> {
-    const artist = await this.artistRepository.findOne({ where: { id } });
+    const artist = await this.findOne(id);
 
     if (!artist) {
       throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
     }
-    Object.assign(artist, updateArtistDto);
-    await this.artistRepository.save(artist);
-    return plainToClass(ArtistEntity, artist);
+
+    await this.artistRepository.update(id, updateArtistDto);
+
+    return plainToClass(ArtistEntity, { ...artist, ...updateArtistDto });
   }
 
   async remove(id: string): Promise<void> {
-    const artist = await this.artistRepository.findOne({
-      where: { id },
-    });
-    if (!artist) {
+    const result = await this.artistRepository.delete(id);
+
+    if (result.affected === 0) {
       throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
     }
-    await this.artistRepository.remove(artist);
   }
 }

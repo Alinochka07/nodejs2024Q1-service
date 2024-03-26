@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
-import { IsArray, IsIn, IsNotEmpty } from 'class-validator';
+import { IsIn } from 'class-validator';
 import { TrackEntity } from '../tracks/track.entity';
 import { AlbumEntity } from '../albums/album.entity';
 import { ArtistEntity } from '../artists/artist.entity';

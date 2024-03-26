@@ -3,75 +3,52 @@ import { FavoriteEntityType, FavoriteEntity } from './favorite.entity';
 import { FavoriteNotFoundException } from './http-exceptions';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ArtistEntity } from '../artists/artist.entity';
-import { AlbumEntity } from '../albums/album.entity';
-import { TrackEntity } from '../tracks/track.entity';
-import { UserEntity } from '../users/user.entity';
+import { ArtistsService } from '../artists/artist.service';
+import { AlbumsService } from '../albums/album.service';
+import { TracksService } from '../tracks/track.service';
 
 @Injectable()
 export class FavoritesService {
   constructor(
     @InjectRepository(FavoriteEntity)
     private readonly favoriteRepository: Repository<FavoriteEntity>,
-    @InjectRepository(ArtistEntity)
-    private readonly artistRepository: Repository<ArtistEntity>,
-    @InjectRepository(AlbumEntity)
-    private readonly albumRepository: Repository<AlbumEntity>,
-    @InjectRepository(TrackEntity)
-    private readonly trackRepository: Repository<TrackEntity>,
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
+    private readonly artistService: ArtistsService,
+    private readonly albumService: AlbumsService,
+    private readonly trackService: TracksService,
   ) {}
 
-  async findAll() {
+  async findAll(): Promise<FavoriteEntity[]> {
     return await this.favoriteRepository.find();
   }
 
-  async addFavorite(type: FavoriteEntityType, id: string) {
-    const favorite = new FavoriteEntity();
+  async addFavorite(
+    type: FavoriteEntityType,
+    id: string,
+  ): Promise<{ message: string }> {
+    try {
+      // Retrieve the entity based on the provided type and id
+      const entity = await this.getEntity(type, id);
 
-    switch (type) {
-      case 'user':
-        const user = await this.userRepository.findOne({ where: { id } });
-        favorite.users = [user];
-        break;
-      case 'artist':
-        const artist = await this.artistRepository.findOne({ where: { id } });
-        favorite.artists = [artist];
-        break;
-      case 'album':
-        const album = await this.albumRepository.findOne({ where: { id } });
-        favorite.albums = [album];
-        break;
-      case 'track':
-        const track = await this.trackRepository.findOne({ where: { id } });
-        favorite.tracks = [track];
-        break;
-      default:
-        throw new Error('Invalid favorite type');
+      // Create a new FavoriteEntity instance and assign the entity to it
+      const favorite = new FavoriteEntity();
+      favorite[type + 's'] = [entity];
+
+      await this.favoriteRepository.save(favorite);
+
+      return {
+        message: `${type} with id: ${id} successfully added to favorites`,
+      };
+    } catch (error) {
+      console.error(`Error adding favorite: ${error}`);
+      throw new Error(`Failed to add ${type} with id: ${id} to favorites`);
     }
-    const savedFavorite = await this.favoriteRepository.save(favorite);
-    return {
-      message: `${type} with id: ${id} successfully added to favorites`,
-    };
   }
 
-  async removeFavorite(type: FavoriteEntityType, id: string) {
-    let condition: Record<string, unknown>;
-
-    switch (type) {
-      case 'artist':
-        condition = { artists: { id } };
-        break;
-      case 'album':
-        condition = { albums: { id } };
-        break;
-      case 'track':
-        condition = { tracks: { id } };
-        break;
-      default:
-        throw new Error('Invalid favorite type');
-    }
+  async removeFavorite(
+    type: FavoriteEntityType,
+    id: string,
+  ): Promise<{ message: string }> {
+    const condition = { [type + 's']: { id } };
 
     const deleted = await this.favoriteRepository.delete(condition);
 
@@ -82,5 +59,16 @@ export class FavoritesService {
     return {
       message: `${type} with id: ${id} successfully removed from favorites`,
     };
+  }
+
+  private async getEntity(type: FavoriteEntityType, id: string): Promise<any> {
+    if (type === 'artist') {
+      return await this.artistService.findOne(id);
+    } else if (type === 'album') {
+      return await this.albumService.findOne(id);
+    } else if (type === 'track') {
+      return await this.trackService.findOne(id);
+    }
+    throw new Error('Invalid favorite type');
   }
 }

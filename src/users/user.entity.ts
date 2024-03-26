@@ -36,9 +36,11 @@ export class UserEntity {
   @ApiProperty({ description: 'Timestamp of creation', example: 1646880000 })
   createdAt: number;
 
-  @Column({ type: 'bigint' })
-  @ApiProperty({ description: 'Timestamp of last update', example: 1646881000 })
-  updatedAt: number;
+  @Column({
+    type: 'bigint',
+    default: () => 'EXTRACT(epoch FROM CURRENT_TIMESTAMP) * 1000',
+  })
+  updatedAt: number | null;
 }
 
 // import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';

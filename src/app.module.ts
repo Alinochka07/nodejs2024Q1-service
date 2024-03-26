@@ -7,8 +7,6 @@ import { FavoritesModule } from './favorites/favorite.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 
 @Module({
   imports: [
@@ -33,7 +31,5 @@ import { AppService } from './app.service';
     TracksModule,
     FavoritesModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
