@@ -12,7 +12,6 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AlbumsService } from './album.service';
 import { CreateAlbumDto, UpdateAlbumDto } from './dto';
-
 import { AlbumEntity } from './album.entity';
 
 @ApiTags('Album')

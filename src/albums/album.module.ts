@@ -3,10 +3,9 @@ import { AlbumsService } from './album.service';
 import { AlbumsController } from './album.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AlbumEntity } from './album.entity';
-import { AlbumEntityRepository } from './album.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([AlbumEntityRepository])],
+  imports: [TypeOrmModule.forFeature([AlbumEntity])],
   controllers: [AlbumsController],
   providers: [AlbumsService],
 })

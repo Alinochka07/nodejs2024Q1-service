@@ -2,11 +2,15 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { AlbumEntity } from './album.entity';
 import { CreateAlbumDto, UpdateAlbumDto } from './dto';
-import { AlbumEntityRepository } from './album.repository';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AlbumsService {
-  constructor(private readonly albumRepository: AlbumEntityRepository) {}
+  constructor(
+    @InjectRepository(AlbumEntity)
+    private readonly albumRepository: Repository<AlbumEntity>,
+  ) {}
 
   async create(createAlbumDto: CreateAlbumDto): Promise<AlbumEntity> {
     const album = await this.albumRepository.save(createAlbumDto);

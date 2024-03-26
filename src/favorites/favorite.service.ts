@@ -1,28 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { FavoriteEntityType, FavoriteEntity } from './favorite.entity';
 import { FavoriteNotFoundException } from './http-exceptions';
-import { FavoriteRepository } from './favorite.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ArtistEntity } from '../artists/artist.entity';
 import { AlbumEntity } from '../albums/album.entity';
 import { TrackEntity } from '../tracks/track.entity';
 import { UserEntity } from '../users/user.entity';
-import { ArtistEntityRepository } from '../artists/artist.repository';
-import { AlbumEntityRepository } from '../albums/album.repository';
-import { TrackEntityRepository } from '../tracks/track.repository';
 
 @Injectable()
 export class FavoritesService {
   constructor(
-    @InjectRepository(FavoriteRepository)
+    @InjectRepository(FavoriteEntity)
     private readonly favoriteRepository: Repository<FavoriteEntity>,
     @InjectRepository(ArtistEntity)
-    private readonly artistRepository: ArtistEntityRepository,
+    private readonly artistRepository: Repository<ArtistEntity>,
     @InjectRepository(AlbumEntity)
-    private readonly albumRepository: AlbumEntityRepository,
+    private readonly albumRepository: Repository<AlbumEntity>,
     @InjectRepository(TrackEntity)
-    private readonly trackRepository: TrackEntityRepository,
+    private readonly trackRepository: Repository<TrackEntity>,
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
   ) {}

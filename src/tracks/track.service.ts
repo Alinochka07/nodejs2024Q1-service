@@ -2,11 +2,15 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { TrackEntity } from './track.entity';
 import { CreateTrackDto, UpdateTrackDto } from './dto';
-import { TrackEntityRepository } from './track.repository';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TracksService {
-  constructor(private readonly trackRepository: TrackEntityRepository) {}
+  constructor(
+    @InjectRepository(TrackEntity)
+    private readonly trackRepository: Repository<TrackEntity>,
+  ) {}
 
   async create(createTrackDto: CreateTrackDto) {
     const track = await this.trackRepository.save(createTrackDto);
