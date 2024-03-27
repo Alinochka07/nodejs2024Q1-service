@@ -1,23 +1,62 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable } from 'typeorm';
 import { IsIn } from 'class-validator';
-import { Album } from '../albums/album.entity';
-import { Artist } from '../artists/artist.entity';
-import { Track } from '../tracks/track.entity';
+import { TrackEntity } from '../tracks/track.entity';
+import { AlbumEntity } from '../albums/album.entity';
+import { ArtistEntity } from '../artists/artist.entity';
+import { UserEntity } from '../users/user.entity';
 
-export class Favorites {
-  @ApiProperty({ type: [Artist] })
-  artists: Artist[];
+@Entity()
+export class FavoriteEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-  @ApiProperty({ type: [Album] })
-  albums: Album[];
+  @ManyToMany(() => UserEntity)
+  @JoinTable({ name: 'favorite_users' })
+  users: UserEntity[];
 
-  @ApiProperty({ type: [Track] })
-  tracks: Track[];
+  @ManyToMany(() => TrackEntity)
+  @JoinTable({ name: 'favorite_tracks' })
+  tracks: TrackEntity[];
+
+  @ManyToMany(() => AlbumEntity)
+  @JoinTable({ name: 'favorite_albums' })
+  albums: AlbumEntity[];
+
+  @ManyToMany(() => ArtistEntity)
+  @JoinTable({ name: 'favorite_artists' })
+  artists: ArtistEntity[];
 }
 
+// import { Entity, PrimaryGeneratedColumn, ManyToOne, ManyToMany } from 'typeorm';
+// import { User } from '../users/user.entity';
+// import { ArtistEntity } from '../artists/artist.entity';
+// import { AlbumEntity } from '../albums/album.entity';
+// import { TrackEntity } from '../tracks/track.entity';
+// import { ApiProperty } from '@nestjs/swagger';
+// import { IsIn } from 'class-validator';
+
+// @Entity()
+// export class FavoritesEntity {
+//   @PrimaryGeneratedColumn()
+//   id: number;
+
+//   @ManyToMany(() => User, (user) => user.favorites)
+//   user: User;
+
+//   @ManyToMany(() => ArtistEntity)
+//   artists: ArtistEntity[];
+
+//   @ManyToMany(() => AlbumEntity)
+//   albums: AlbumEntity[];
+
+//   @ManyToMany(() => TrackEntity)
+//   tracks: TrackEntity[];
+
+// }
+
 export class TypeParamDto {
-  @IsIn(['track', 'album', 'artist'])
+  @IsIn(['track', 'album', 'artist', 'user'])
   type: string;
 }
 
-export type FavoriteEntityType = 'track' | 'artist' | 'album';
+export type FavoriteEntityType = 'track' | 'artist' | 'album' | 'user';
