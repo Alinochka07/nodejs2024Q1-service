@@ -1,11 +1,21 @@
 # Home Library Service 2
 
-### !Important note:
 
+### !Important note:
+- go to "development2" branch to run the application
 - create .env from .env.example file
 - choose Authorization -> Bearer Token (e.g. on Postman)
 - Content-Type of Headers should be -> application/json format
 
+### Useful commands:
+<ul>
+  <li><code>git clone https://github.com/Alinochka07/nodejs2024Q1-service.git</code> to clone the app</li>
+  <li><code>npm install</code> to install packages</li>
+  <li><code>docker-compose up</code> to run docker and create new images, volumes</li>
+  <li><code>docker-compose down</code> to remove containers from the app</li>
+  <li><code>docker-compose restart app postgres</code> to restart specific image</li>
+</ul>
+    
 # USER
 
 ## To run the Get method:
